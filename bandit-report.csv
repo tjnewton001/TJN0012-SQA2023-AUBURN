@@ -1,4 +1,4 @@
-Run started:2023-12-01 19:14:47.430747
+Run started:2023-12-01 19:15:07.721978
 
 Test results:
 >> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'TEST_ARTIFACTS/helm.values.yaml'

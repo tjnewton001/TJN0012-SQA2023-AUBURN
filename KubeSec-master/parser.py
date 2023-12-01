@@ -14,11 +14,14 @@ import pathlib as pl
 import re
 import subprocess
 import os
+import myLogger
 
 #update basepath
 base_path = r" "
 
 key_jsonpath_mapping = {}
+
+simpleLogger  = myLogger.createLoggerObj()
 
     
 def checkIfWeirdYAML(yaml_script):
@@ -61,6 +64,11 @@ def getKeyRecursively(  dict_, list2hold,  depth_ = 0  ) :
         # for key_, val_ in sorted(dict_.items(), key=lambda x: x[0]):    
         for key_, val_ in sorted(dict_.items(), key = lambda x: x[0] if ( isinstance(x[0], str) ) else str(x[0])  ):    
             if isinstance(val_, dict):
+                #Log the key and value
+                simpleLogger.info("Initiating") 
+                simpleLogger.info('Generic information: value data: %s', str(val_))
+                simpleLogger.info('Generic information: key data: %s', str(key_))
+
                 list2hold.append( (key_, depth_) )
                 depth_ += 1 
                 getKeyRecursively( val_, list2hold,  depth_ ) 
@@ -91,6 +99,7 @@ def getValuesRecursively(  dict_   ) :
 
 
 def checkIfValidK8SYaml(path2yaml):
+    simpleLogger.info('Generic information: the path to the yaml: %s', str(path2yaml))
     val2ret   = False 
     dict_as_list = loadMultiYAML( path2yaml )
     yaml_dict    = getSingleDict4MultiDocs( dict_as_list )        
@@ -118,6 +127,7 @@ def getValsFromKey(dict_, target, list_holder  ):
         for key, value in dict_.items():
             # print( key, len(key) , target, len( target ), value  )
             if key == target:
+                simpleLogger.info('Generic information: key data when it equals the target: %s', str(key))
                 list_holder.append( value )
             else: 
                 if isinstance(value, dict):
@@ -128,6 +138,7 @@ def getValsFromKey(dict_, target, list_holder  ):
 
 def checkIfValidHelm(path_script):
     val_ret = False 
+    simpleLogger.info('Generic information: the path: %s', str(path_script))
     if ( (constants.HELM_KW in path_script) or (constants.CHART_KW in path_script) or (constants.SERVICE_KW in path_script) or (constants.INGRESS_KW in path_script)  or(constants.HELM_DEPLOY_KW in path_script) or (constants.CONFIG_KW in path_script) )  and (constants.VALUE_KW in path_script) :
         val_ret = True 
     return val_ret
@@ -320,7 +331,8 @@ def show_line_for_paths(  filepath, key): #key_jsonpath_mapping is a global dict
     env_PATH = r"C:\ProgramData\Chocolatey\bin"
     lines = []
     adjusted_lines = []
-    print("This is the mapping for the Key",key,"--->",key_jsonpath_mapping[key]) 
+    print("This is the mapping for the Key",key,"--->",key_jsonpath_mapping[key])
+    simpleLogger.info('Generic information: key mapping data: %s', str(key)) 
     # for k in key_jsonpath_mapping:
     #     print("Key--->",k, "Value--->",key_jsonpath_mapping[k])
     if key_jsonpath_mapping.get(key) is not None:
